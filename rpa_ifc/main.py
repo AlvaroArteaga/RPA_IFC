@@ -61,8 +61,9 @@ for i in range(1, 7):
 for i in range(1, 7):
     print("Proceso N°",i,"=", proceso[i-1], proceso.index(proceso[i-1]) )
 
-proceso_ejemplo="PJDX"
-
+#proceso_ejemplo="PJDX"
+proceso_ejemplo="BAEN"
+time.sleep(2)
 driver.find_element(By.XPATH,'//*[@id="cdk-overlay-0"]/div/mat-option[' + str(proceso.index(proceso_ejemplo)+1) + ']').click()
 
 #//*[@id="pdf-anio-listado"]
@@ -92,6 +93,7 @@ for j in range(1, 5):
     print("Año: ",j,"=", ano[j-1], ano.index(ano[j-1]) )
 
 ano_ejemplo="2022"
+time.sleep(1)
 driver.find_element(By.XPATH,'//*[@id="cdk-overlay-1"]/div/mat-option[' + str(ano.index(ano_ejemplo)+1) + ']').click()
 
 
@@ -112,6 +114,7 @@ for j in range(1, 12):
     print("Mes: ",j,"=", mes[j-1], mes.index(mes[j-1]) )
 
 mes_ejemplo="Agosto"
+mes_ejemplo="Marzo"
 driver.find_element(By.XPATH,'//*[@id="cdk-overlay-2"]/div/mat-option[' + str(mes.index(mes_ejemplo)+1) + ']').click()
 
 
@@ -152,7 +155,74 @@ else:
  #   print("Boton Next esta activo")
 #else:
 #    print("Boton Next NO esta activo")
+#.....
 
+driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[1]/mat-form-field').click()
+largo=driver.find_elements(By.XPATH,'//*[@id="cdk-overlay-3"]/div/mat-option/span[@class="mat-option-text"]')
+print('LARGO: ',len(largo))
+#print(largo)
+
+elemento=len(largo)
+time.sleep(2)
+driver.find_element(By.XPATH,'//*[@id="cdk-overlay-3"]/div/mat-option['+str(elemento)+']').click()
+time.sleep(5)
+#driver.find_element(By.XPATH,'//*[@id="cdk-overlay-3"]/div/mat-option['+str(len(largo)-1)+']').click()
+#-------
+paginas=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[2]/div').text
+# driver.find_element(By.XPATH,'//*[@id="mat-select-4"]').click()
+
+#1 - 25 of 41
+
+print('paginas: ', paginas)
+
+
+#//*[@id="cdk-overlay-12"]/div
+#//*[@id="cdk-overlay-12"]     -pane
+#//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[1]/mat-form-field
+time.sleep(2)
+#largo=len(driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[1]/mat-form-field/div/div[1]/div'))
+#largo=[]
+
+#//*[@id="mat-option-688"]
+
+#largo=driver.find_element(By.CSS_SELECTOR,'div.cdk-overlay-pane') 
+#//*[@id="mat-option-694"]/span
+#/html/body/div[3]/div[2]/div/div
+#/html/body/div[3]/div[2]/div/div/mat-option[1]/span
+
+
+#registros=int(paginas[-2:])
+
+registros=int(paginas[paginas.index('of ')+3:])
+registrospp=int(paginas[paginas.index('- ')+2:paginas.index(' of')])
+print('registros: ', registros)
+print('registros por pagina: ', registrospp)
+print('paginas completas: ',registros//registrospp)
+print('paginas adicional?: ', 'si' if registros%registrospp>0 else 'no' )
+totalp=registros//registrospp + (1 if registros%registrospp>0 else 0)
+print('total de paginas: ', registros//registrospp + (1 if registros%registrospp>0 else 0))
+
+
+
+
+
+time.sleep(3)
+#driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[2]/button[2]').click()
+
+for i in range (1,totalp) :
+    driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[2]/button[2]').click()
+
+
+time.sleep(3)
+#driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[2]/button[2]').click()
+
+
+#//*[@id="cdk-overlay-12"]/div
+#//*[@id="mat-option-696"]
+#//*[@id="mat-option-696"]/span
+#mat-option[
+    
+#//*[@id="cdk-overlay-12"]
 
 
 #/html/body/div[3]/div[2]/div/div/mat-option[3]/span
@@ -176,5 +246,5 @@ time.sleep(3)
 #driver.find_element(By.NAME,'BADX')
 #//*[@id="mat-option-709"]/span
 #<span class="mat-option-text"> EFAC </span>
-time.sleep(5)
+#time.sleep(5)
 driver.quit()
