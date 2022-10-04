@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import os
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__)).rsplit(os.sep, 1)[0]+"\ifc"
+ruta=str(ROOT_DIR)
 print(ROOT_DIR)
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -72,6 +73,7 @@ for i in range(1, 7):
 
 #proceso_ejemplo="PJDX"
 proceso_ejemplo="BAEN"
+#proceso_ejemplo="BADX"
 time.sleep(2)
 driver.find_element(By.XPATH,'//*[@id="cdk-overlay-0"]/div/mat-option[' + str(proceso.index(proceso_ejemplo)+1) + ']').click()
 
@@ -128,6 +130,25 @@ driver.find_element(By.XPATH,'//*[@id="cdk-overlay-2"]/div/mat-option[' + str(me
 
 #X
 
+# creando carpetas
+
+ruta_proceso = ruta+'\\'+ str(proceso_ejemplo)
+ruta_ano = ruta_proceso +'\\'+ str(ano_ejemplo)
+ruta_mes = ruta_ano +'\\'+ str(mes_ejemplo)
+try:
+  os.stat(ruta_proceso)
+except:
+  os.mkdir(ruta_proceso)
+  
+try:
+  os.stat(ruta_ano)
+except:
+  os.mkdir(ruta_ano)
+
+try:
+  os.stat(ruta_mes)
+except:
+  os.mkdir(ruta_mes)
 #//*[@id="pd-descargar-uno"]
 #//*[@id="pd-descargar-uno"]
 #//*[@id="mat-expansion-panel-header-13"]/span/div[7]/a
@@ -214,9 +235,11 @@ totalp=registros//registrospp + (1 if registros%registrospp>0 else 0)
 print('total de paginas: ', registros//registrospp + (1 if registros%registrospp>0 else 0))
 
 
+params = { 'behavior': 'allow', 'downloadPath': ruta_mes }
+driver.execute_cdp_cmd('Page.setDownloadBehavior', params)
 
-
-
+if totalp==1:
+    registros_extra=registrospp
 time.sleep(3)
 #driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[2]/button[2]').click()
 #j=1
@@ -224,8 +247,9 @@ time.sleep(3)
 #print("test --->",empresa)
 #version=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[3]').text
 #print('version: ',version)
-
-for i in range (1,totalp) :
+#print('-test-',totalp,'--',registrospp,'-',registros_extra)
+#i=1
+for i in range (1,totalp+1) :
     if i!=totalp:
         for j in range (1,registrospp) :
             version=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[3]').text
