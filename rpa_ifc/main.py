@@ -1,4 +1,5 @@
 from cgitb import text
+from lib2to3.pgen2.driver import Driver
 from re import X
 from selenium import webdriver
 import time
@@ -7,11 +8,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 #driver=webdriver.Chrome('RPA_IFC/webdriver/chromedriver.exe')
+import os
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__)).rsplit(os.sep, 1)[0]+"\ifc"
+print(ROOT_DIR)
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
+prefs = {"download.default_directory" : ROOT_DIR}
+options.add_experimental_option("prefs",prefs)
+
 service = Service('RPA_IFC/webdriver/chromedriver.exe')
 driver = webdriver.Chrome(service=service, options=options)
+
 
 # abrir la web
 driver.get('https://web.ifc.coordinador.cl/')
@@ -114,7 +122,7 @@ for j in range(1, 12):
 for j in range(1, 12):
     print("Mes: ",j,"=", mes[j-1], mes.index(mes[j-1]) )
 
-mes_ejemplo="Agosto"
+#mes_ejemplo="Agosto"
 mes_ejemplo="Marzo"
 driver.find_element(By.XPATH,'//*[@id="cdk-overlay-2"]/div/mat-option[' + str(mes.index(mes_ejemplo)+1) + ']').click()
 
@@ -249,4 +257,37 @@ time.sleep(3)
 #//*[@id="mat-option-709"]/span
 #<span class="mat-option-text"> EFAC </span>
 #time.sleep(5)
+
+#//*[@id="pd-descargar-uno"]
+#//*[@id="mat-expansion-panel-header-1"]/span/div[7]/a
+#//*[@id="mat-expansion-panel-header-3"]/span/div[7]/a
+#//*[@id="mat-expansion-panel-header-0"]/span/div[7]/a
+#//*[@id="mat-expansion-panel-header-0"]/span/div[7]
+#//*[@id="mat-expansion-panel-header-0"]/span
+#//*[@id="mat-expansion-panel-header-0"]
+#//*[@id="pd-expasion-panel-"]
+#//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/div
+#//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card
+#//*[@id="mat-expansion-panel-header-0"]/span
+#//*[@id="mat-expansion-panel-header-0"]
+#//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]
+#//*[@id="pd-expasion-panel-"]
+#//*[@id="mat-expansion-panel-header-0"]
+#//*[@id="pd-expasion-panel-"]
+#//*[@id="pd-expasion-panel-"]
+#//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]
+#//*[@id="mat-expansion-panel-header-0"]/span
+
+empresa=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel[2]/mat-expansion-panel-header/span/div[2]').text
+#//*[@id="mat-expansion-panel-header-0"]/span/div[7]
+#//*[@id="mat-expansion-panel-header-0"]/span/div[2]
+#//*[@id="mat-expansion-panel-header-0"]/span
+#//*[@id="mat-expansion-panel-header-0"]
+#//*[@id="pd-expasion-panel-"]
+
+driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel[2]/mat-expansion-panel-header/span/div[7]/a').click()
+
+
+time.sleep(50)
+print(empresa)
 driver.quit()

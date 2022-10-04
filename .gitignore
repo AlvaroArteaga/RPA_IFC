@@ -3,4 +3,5 @@
 # Example .gitignore files: https://github.com/github/gitignore
 # ignora la carpeta webdriver que tiene el driver de chrome
 webdriver
+ifc
 /.vscode/
