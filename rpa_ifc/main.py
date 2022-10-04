@@ -205,6 +205,7 @@ time.sleep(2)
 
 registros=int(paginas[paginas.index('of ')+3:])
 registrospp=int(paginas[paginas.index('- ')+2:paginas.index(' of')])
+registros_extra=registros%registrospp
 print('registros: ', registros)
 print('registros por pagina: ', registrospp)
 print('paginas completas: ',registros//registrospp)
@@ -218,10 +219,27 @@ print('total de paginas: ', registros//registrospp + (1 if registros%registrospp
 
 time.sleep(3)
 #driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[2]/button[2]').click()
+#j=1
+#empresa=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel[1]/mat-expansion-panel-header/span/div[3]').text
+#print("test --->",empresa)
+#version=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[3]').text
+#print('version: ',version)
 
 for i in range (1,totalp) :
+    if i!=totalp:
+        for j in range (1,registrospp) :
+            version=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[3]').text
+            if version[0:2]=="VE":
+                driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[7]/a').click()
+            time.sleep(1)
+    else:
+        for j in range (1,registros_extra) :
+            version=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[3]').text
+            if version[0:2]=="VE":
+                driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[7]/a').click()
+            time.sleep(1)
     driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[2]/button[2]').click()
-
+    time.sleep(1)
 
 time.sleep(3)
 #driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[2]/button[2]').click()
@@ -277,17 +295,17 @@ time.sleep(3)
 #//*[@id="pd-expasion-panel-"]
 #//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]
 #//*[@id="mat-expansion-panel-header-0"]/span
-
-empresa=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel[2]/mat-expansion-panel-header/span/div[2]').text
+#empresa
+#empresa=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel[2]/mat-expansion-panel-header/span/div[2]').text
 #//*[@id="mat-expansion-panel-header-0"]/span/div[7]
 #//*[@id="mat-expansion-panel-header-0"]/span/div[2]
 #//*[@id="mat-expansion-panel-header-0"]/span
 #//*[@id="mat-expansion-panel-header-0"]
 #//*[@id="pd-expasion-panel-"]
+#bajar archivo
+#driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel[2]/mat-expansion-panel-header/span/div[7]/a').click()
 
-driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel[2]/mat-expansion-panel-header/span/div[7]/a').click()
 
-
-time.sleep(50)
-print(empresa)
+time.sleep(6)
+#print(empresa)
 driver.quit()
