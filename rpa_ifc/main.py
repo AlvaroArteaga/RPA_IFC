@@ -71,8 +71,8 @@ for i in range(1, 7):
 for i in range(1, 7):
     print("Proceso N°",i,"=", proceso[i-1], proceso.index(proceso[i-1]) )
 
-#proceso_ejemplo="PJDX"
-proceso_ejemplo="BAEN"
+proceso_ejemplo="PJDX"
+#proceso_ejemplo="BAEN"
 #proceso_ejemplo="BADX"
 time.sleep(2)
 driver.find_element(By.XPATH,'//*[@id="cdk-overlay-0"]/div/mat-option[' + str(proceso.index(proceso_ejemplo)+1) + ']').click()
@@ -124,8 +124,12 @@ for j in range(1, 12):
 for j in range(1, 12):
     print("Mes: ",j,"=", mes[j-1], mes.index(mes[j-1]) )
 
+#mes_ejemplo="Abril"
+#mes_ejemplo="Mayo"
+#mes_ejemplo="Junio"
+mes_ejemplo="Julio"
 #mes_ejemplo="Agosto"
-mes_ejemplo="Marzo"
+#mes_ejemplo="Marzo"
 driver.find_element(By.XPATH,'//*[@id="cdk-overlay-2"]/div/mat-option[' + str(mes.index(mes_ejemplo)+1) + ']').click()
 
 #X
