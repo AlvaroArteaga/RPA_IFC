@@ -1,3 +1,4 @@
+from sre_constants import AT_NON_BOUNDARY
 import pandas as pd
 import glob
 from pandas import ExcelWriter
@@ -7,12 +8,13 @@ hoja2='2_Pago_Peajes'
 hoja3='3_Cambio_Regimen'
 # getting excel files to be merged from the Desktop 
 #mes='Abril'
+ano='2022'
 #mes='Mayo'
 #mes='Junio'
 #mes='Julio'
 mes='Agosto'
 ruta = "E:\GitHub\RPA_IFC\ifc\PJDX\\2022\\" + mes
-ruta = "E:\GitHub\RPA_IFC\ifc"
+#ruta = "E:\GitHub\RPA_IFC\ifc"
 #print(ruta)
 # read all the files with extension .xlsx i.e. excel 
 archivos = glob.glob(ruta + "\*.xlsx")
@@ -44,23 +46,34 @@ for file in archivos:                         # loop through Excel files
         
         #df1 = excel_file.parse(sheet_name = hoja1)
         #Read all data and do not skip any row:
-        #--------------df1 = pd.read_excel(file, sheet_name=hoja1)
+        df1 = pd.read_excel(file, sheet_name=hoja1)
         #Find index of first row with 'No." in the first column and take everything till the end:
-        #--------------df1 = df1.iloc[df1[df1.iloc[:, 0].eq('Id_Cliente')].index[0]:, :].reset_index(drop=True)
+        df1 = df1.iloc[df1[df1.iloc[:, 0].eq('Id_Cliente')].index[0]:, :].reset_index(drop=True)
         #Set first row as columns:
 
-        #--------------df1.columns = df1.iloc[0]
+        df1.columns = df1.iloc[0]
         #Drop first row (we do not need it because there are column names repeated there):
-
-        #--------------df1 = df1.drop(0).reset_index(drop=True)
-        
-        df1 = excel_file.parse(sheet_name = hoja1, header=0)
+        # data  = data.replace('', np.nan).dropna()
+        df1['ifc_mes']=mes
+        df1['ifc_año']=ano
+        df1 = df1.drop(0).reset_index(drop=True)
+        #df1.dropna()
+        #df1 = excel_file.parse(sheet_name = hoja1, header=0)
         df1_total = df1_total.append(df1)
         
         df2 = excel_file.parse(sheet_name = hoja2, header=0)
+        
+        df2['ifc_mes']=mes
+        df2['ifc_año']=ano
+        
         df2_total = df2_total.append(df2)
         
         df3 = excel_file.parse(sheet_name = hoja3, header=0)
+        
+        df3['ifc_mes']=mes
+        df3['ifc_año']=ano
+        
+        
         df3_total = df3_total.append(df3)
         #df_total.to_excel('combined_file.xlsx')
 
@@ -72,8 +85,8 @@ for file in archivos:                         # loop through Excel files
         df3_total.replace("", nan_value, inplace=True) 
         df3_total.dropna(how='all', axis=1, inplace=True)
 
-mes="2022"
-with ExcelWriter("E:\GitHub\RPA_IFC\ifc\pjdx_"+mes+".xlsx") as writer:
+#mes="2022"
+with ExcelWriter("E:\GitHub\RPA_IFC\ifc\pjdx_"+mes+ano+".xlsx") as writer:
     df1_total.to_excel(writer, hoja1, index=False)
     df2_total.to_excel(writer, hoja2, index=False)
     df3_total.to_excel(writer, hoja3, index=False)
