@@ -104,7 +104,7 @@ for j in range(1, 5):
     print("Año: ",j,"=", ano[j-1], ano.index(ano[j-1]) )
 
 ano_ejemplo="2022"
-time.sleep(1)
+time.sleep(2)
 driver.find_element(By.XPATH,'//*[@id="cdk-overlay-1"]/div/mat-option[' + str(ano.index(ano_ejemplo)+1) + ']').click()
 
 
@@ -127,9 +127,9 @@ for j in range(1, 12):
 #mes_ejemplo="Abril"
 #mes_ejemplo="Mayo"
 #mes_ejemplo="Junio"
-mes_ejemplo="Julio"
+#mes_ejemplo="Julio"
 #mes_ejemplo="Agosto"
-#mes_ejemplo="Marzo"
+mes_ejemplo="Marzo"
 driver.find_element(By.XPATH,'//*[@id="cdk-overlay-2"]/div/mat-option[' + str(mes.index(mes_ejemplo)+1) + ']').click()
 
 #X
