@@ -7,8 +7,8 @@ hoja1='1_Cobro_Peajes'
 hoja2='2_Pago_Peajes'
 hoja3='3_Cambio_Regimen'
 # getting excel files to be merged from the Desktop 
-#mes='Abril'
 ano='2022'
+#mes='Abril'
 #mes='Mayo'
 #mes='Junio'
 #mes='Julio'
@@ -60,9 +60,10 @@ for file in archivos:                         # loop through Excel files
         #df1.dropna()
         #df1 = excel_file.parse(sheet_name = hoja1, header=0)
         df1_total = df1_total.append(df1)
+        #df2 = excel_file.parse(sheet_name = hoja2, header=0)
         
         df2 = excel_file.parse(sheet_name = hoja2, header=0)
-        
+        df2.rename({'N°Cliente': 'Id_Cliente'}, axis=1,inplace=True)
         df2['ifc_mes']=mes
         df2['ifc_año']=ano
         

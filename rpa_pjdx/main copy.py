@@ -62,7 +62,8 @@ for file in archivos:                         # loop through Excel files
         df1_total = df1_total.append(df1)
         
         df2 = excel_file.parse(sheet_name = hoja2, header=0)
-        
+        df2.rename({'Id_Cliente': 'N°Cliente'}, axis=1)
+
         #df2['ifc_mes']=mes
         #df2['ifc_año']=ano
         
