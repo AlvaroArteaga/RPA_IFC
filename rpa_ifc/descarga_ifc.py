@@ -10,6 +10,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 #driver=webdriver.Chrome('RPA_IFC/webdriver/chromedriver.exe')
 import os
+import sys 
+
 
 switch_mes = {1:'Enero',2:'Febrero',3:'Marzo',4:'Abril',5:'Mayo',6:'Junio',7:'Julio',8:'Agosto',9:'Septiembre',10:'Octubre',11:'Noviembre',12:'Diciembre'}
 
@@ -62,8 +64,8 @@ def descarga(proceso_ejemplo, mes_ejemplo, ano_ejemplo, ruta):
     proceso=[]
 
     #for i=1 to 
-
-    for i in range(1, 7):
+    time.sleep(1)
+    for i in range(1, 8):
         proceso.append(driver.find_element(By.XPATH,'//*[@id="cdk-overlay-0"]/div/mat-option[' + str(i) + ']').text)
 
     #p[1]=driver.find_element(By.XPATH,'//*[@id="cdk-overlay-0"]/div/mat-option[1]').text
@@ -124,7 +126,7 @@ def descarga(proceso_ejemplo, mes_ejemplo, ano_ejemplo, ruta):
     time.sleep(1)
     driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/app-filtros-despliegue-publico/div[1]/mat-form-field[3]/div/div[1]/div').click()
     mes=[]
-    for j in range(1, 12):
+    for j in range(1, 13):
         mes.append(driver.find_element(By.XPATH,'//*[@id="cdk-overlay-2"]/div/mat-option[' + str(j) + ']').text)
 
     ###for j in range(1, 12):
@@ -136,15 +138,24 @@ def descarga(proceso_ejemplo, mes_ejemplo, ano_ejemplo, ruta):
     #mes_ejemplo="Julio"
     #mes_ejemplo="Agosto"
     #mes_ejemplo="Marzo"
-    time.sleep(1)
-    driver.find_element(By.XPATH,'//*[@id="cdk-overlay-2"]/div/mat-option[' + str(mes.index(mes_ejemplo)+1) + ']').click()
+    time.sleep(2)
+    #print(driver.find_element(By.XPATH,'//*[@id="cdk-overlay-2"]/div/mat-option[' + str(mes.index(mes_ejemplo)+1) + ']').get_attribute('aria-disabled'))
+    if driver.find_element(By.XPATH,'//*[@id="cdk-overlay-2"]/div/mat-option[' + str(mes.index(mes_ejemplo)+1) + ']').get_attribute('aria-disabled')=='true':
+        driver.quit()
+        print(mes_ejemplo + '-'+ ano_ejemplo + ' del proceso '+ proceso_ejemplo + ' No existe. Proceso finalizado ...')
+        time.sleep(1)
+        return
 
+    driver.find_element(By.XPATH,'//*[@id="cdk-overlay-2"]/div/mat-option[' + str(mes.index(mes_ejemplo)+1) + ']').click()
+    time.sleep(2)
     #X
     try:
-            driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/div/text()')
+            driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[2]/div[2]/mat-paginator/div/div/div[2]/div')
     except:      
-            print('No existen documentos para búsqueda realizada. Proceso finalizado ...')
             driver.quit()
+            print('No existen documentos para búsqueda realizada. Proceso finalizado ...')
+            time.sleep(1)
+            return
 
     # creando carpetas
 
@@ -281,7 +292,7 @@ def descarga(proceso_ejemplo, mes_ejemplo, ano_ejemplo, ruta):
                 version=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[3]').text
                 archivo_a_revisar=driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[6]').text
                 if version[0:2]=="VE" and not(os.path.isfile(ruta_mes + '\\' + archivo_a_revisar)):
-                    driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[6]/a').click()
+                    driver.find_element(By.XPATH,'//*[@id="mat-tab-content-0-0"]/div/app-despliegue-publico/div/mat-card/div[1]/mat-expansion-panel['+str(j)+']/mat-expansion-panel-header/span/div[7]/a').click()
                     print(ruta_mes+'\\'+archivo_a_revisar, '...descargado.')
                 elif version[0:2]=="VE":
                     print('archivo ', archivo_a_revisar, 'ya existe. No descargado...')
