@@ -10,10 +10,11 @@ hoja3='3_Cambio_Regimen'
 ano='2022'
 #mes='Abril'
 #mes='Mayo'
-#mes='Junio'
+mes='Junio'
 #mes='Julio'
-mes='Agosto'
-ruta = "E:\GitHub\RPA_IFC\ifc\PJDX\\2022\\" + mes
+#mes='Agosto'
+#actualizar ruta variable
+ruta = "C:\GitHub\RPA_IFC\ifc\PJDX\\2022\\" + mes
 #ruta = "E:\GitHub\RPA_IFC\ifc"
 #print(ruta)
 # read all the files with extension .xlsx i.e. excel 
@@ -87,7 +88,8 @@ for file in archivos:                         # loop through Excel files
         df3_total.dropna(how='all', axis=1, inplace=True)
 
 #mes="2022"
-with ExcelWriter("E:\GitHub\RPA_IFC\ifc\pjdx_"+mes+ano+".xlsx") as writer:
+#actualizar ruta variable
+with ExcelWriter("C:\GitHub\RPA_IFC\ifc\pjdx_"+mes+ano+".xlsx") as writer:
     df1_total.to_excel(writer, hoja1, index=False)
     df2_total.to_excel(writer, hoja2, index=False)
     df3_total.to_excel(writer, hoja3, index=False)

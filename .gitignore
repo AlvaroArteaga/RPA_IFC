@@ -4,4 +4,6 @@
 # ignora la carpeta webdriver que tiene el driver de chrome
 webdriver
 ifc
+#test2
+#test
 /.vscode/
