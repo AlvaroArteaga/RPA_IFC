@@ -4,7 +4,8 @@
 # ignora la carpeta webdriver que tiene el driver de chrome
 webdriver
 ifc
-__pycache__
+__pycache__/
+*.pyc
 #test2
 #test
 /.vscode/
