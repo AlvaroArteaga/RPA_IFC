@@ -10,9 +10,17 @@ from kivymd.app import MDApp
 from kivymd.uix.list import IRightBodyTouch, TwoLineAvatarIconListItem
 from kivymd.uix.selectioncontrol import MDCheckbox
 from kivymd.icon_definitions import md_icons
-
+from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.tab import MDTabsBase
 
 KV = '''
+
+
+
+
+
+
+
 <TwoLineIconListItem>:
     text:
     secondary_text:
@@ -21,40 +29,58 @@ KV = '''
     IconLeftWidget:
         icon: root.icon
 
-   
+
+
+
 
 MDBoxLayout:
     orientation: "vertical"
-
-    size: root.width, 40
-    pos: root.pos
-    row_default_height: 10
-    rows: 3
-    cols: 2
-    padding: 20
-    spacing: 10 
 
     MDTopAppBar:
         id: toolbar
         title: "Seleccione el proceso a descargar"
         right_action_items: [["arrow-right", lambda x: app.callback()]]
         md_bg_color: 0, 0, 0, 1
-        
+
+    MDTabs:
+        id: tabs
+        Tab:
+            id: one
+            title: 'Procesos'
+
+
+
+            MDScrollView:
+
+                MDSelectionList:
+                    id: scroll
+                    spacing: "12dp"
+                    overlay_color: app.overlay_color[:-1] + [.2]
+                    icon_bg_color: app.overlay_color
+                    on_selected: app.on_selected(*args)
+                    on_unselected: app.on_unselected(*args)
+                    on_selected_mode: app.set_selection_mode(*args)
+        Tab:
+            id: two
+            title: 'Meses'
+        Tab:
+            id: two
+            title: 'Directorio'
+
+
+
+
+   
+
 
         
 
-    MDScrollView:
 
-        MDSelectionList:
-            id: scroll
-            spacing: "12dp"
-            overlay_color: app.overlay_color[:-1] + [.2]
-            icon_bg_color: app.overlay_color
-            on_selected: app.on_selected(*args)
-            on_unselected: app.on_unselected(*args)
-            on_selected_mode: app.set_selection_mode(*args)
+    
 '''
 
+class Tab(MDFloatLayout, MDTabsBase):
+    '''Class implementing content for a tab.'''
 
 class TwoLineIconListItem(TwoLineAvatarIconListItem):
     '''Custom list item.'''
@@ -70,9 +96,15 @@ class Example(MDApp):
     overlay_color = get_color_from_hex("#6042e4")
     def build(self):
         self.theme_cls.theme_style = "Light"
+        self.theme_cls.primary_palette = "Orange"
         return Builder.load_string(KV)
 
     def on_start(self):
+
+        #self.root.ids.tabs.add_widget(Tab(title=f"Procesos"))
+        #self.root.ids.tabs.add_widget(Tab(title=f"Meses"))
+        #self.root.ids.tabs.add_widget(Tab(title=f"Directorio"))
+
         icons = list(md_icons.keys())
         self.root.ids.scroll.add_widget(TwoLineIconListItem(text=f"BADX", secondary_text=f"Balance de Energía en Distribución", icon=icons[1],on_release=self.seleccion_proceso))
         self.root.ids.scroll.add_widget(TwoLineIconListItem(text=f"BAEN", secondary_text=f"Balance de Energía en Transmisión", icon=icons[2]))
@@ -142,6 +174,11 @@ class Example(MDApp):
             self.root.ids.toolbar.right_action_items = [[""]]
             self.root.ids.toolbar.left_action_items = [[""]]
 
+    def on_tab_switch(self, instance_tabs, instance_tab, instance_tab_label, tab_text):
+        instance_tab.ids.label.text = tab_text
+
+
     def seleccion_proceso(self, TwoLineIconListItem):
         print('Proceso Seleccionado: ', TwoLineIconListItem.text)
+
 Example().run()
