@@ -1,3 +1,4 @@
+from os import listdir
 from kivy.animation import Animation
 from ast import arg
 from cgitb import text
@@ -12,6 +13,11 @@ from kivymd.uix.selectioncontrol import MDCheckbox
 from kivymd.icon_definitions import md_icons
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.tab import MDTabsBase
+import sys
+import ctypes
+from ctypes import *
+
+
 
 KV = '''
 
@@ -39,7 +45,7 @@ MDBoxLayout:
     MDTopAppBar:
         id: toolbar
         title: "Seleccione el proceso a descargar"
-        right_action_items: [["arrow-right", lambda x: app.callback()]]
+        right_action_items: [["arrow-right", lambda x: app.siguiente]]
         md_bg_color: 0, 0, 0, 1
 
     MDTabs:
@@ -127,7 +133,7 @@ class Example(MDApp):
                     lambda x: self.root.ids.scroll.unselected_all(),
                 ]
             ]
-            right_action_items = [["arrow-right", lambda x: self.root.ids.scroll.unselected_all(),]]
+            right_action_items = [["arrow-right", lambda x: self.siguiente(),]]
         else:
             self.root.ids.scroll.selected_mode = True
             #md_bg_color = (1, 1, 1, 1)
@@ -156,7 +162,7 @@ class Example(MDApp):
         ]]
         self.root.ids.toolbar.right_action_items = [[
             "arrow-right",
-            lambda x: self.root.ids.scroll.unselected_all(),
+            lambda x: self.siguiente(),
         ]]
 
     def on_unselected(self, instance_selection_list, instance_selection_item):
@@ -180,5 +186,19 @@ class Example(MDApp):
 
     def seleccion_proceso(self, TwoLineIconListItem):
         print('Proceso Seleccionado: ', TwoLineIconListItem.text)
+
+    def siguiente(self):
+        print("siguiente")
+        print("tiene: ", len(self.root.ids.scroll.get_selected_list_items()), " procesos seleccionados")
+        for p in self.root.ids.scroll.get_selected_list_items() :
+            i=str(p).rfind('at ')+3
+            f=len(str(p))-1
+            item=str(p)[i:f]
+            #val_item=ctypes.cast(item, ctypes.py_object).value
+            val_item=ctypes.cast(item, POINTER(kivymd.uix.selection.selection.SelectionItem)).text
+            print("seleccionó: ",p)
+
+        for item in self.root.ids.scroll.children:
+            if item.text == 'test':
 
 Example().run()
