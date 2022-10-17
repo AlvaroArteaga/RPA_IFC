@@ -18,7 +18,9 @@ from kivymd.uix.tab import MDTabsBase
 import sys
 import ctypes
 from ctypes import *
+from kivy.core.window import Window
 
+Window.size = (470,700)
 
 
 
