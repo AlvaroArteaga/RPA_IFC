@@ -71,9 +71,10 @@ for x in range(len(idCoordinado_df)):
     
 Punto_medidas_df = pd.DataFrame(data=Punto_medidas_list, columns=['idPuntoMedida','idCoordinado','subestacion','tension','region'])  
 #print(Punto_medidas_df)
-#Punto_medidas_df.to_excel('Punto_medidas.xlsx', index=False)
+Punto_medidas_df.to_excel('Punto_medidas.xlsx', index=False)
 ano='2022'
 mes='09'
+#print(" ok ")
 medidas_list=[]
 #print('ultiomo es: ',len(Punto_medidas_df))
 #print(str(Punto_medidas_df.iloc[0,0]))
@@ -87,8 +88,12 @@ medidas_list=[]
 t=True
 h=0
 k=0
+zz=0
 for z in range(len(Punto_medidas_df)):
-
+    if zz==0:
+        z=1000
+        zz=1
+    
     try:
         #print("z:   ", z, "-", type(z))
         punto_m=str(Punto_medidas_df.iloc[z,0])
