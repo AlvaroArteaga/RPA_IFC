@@ -19,6 +19,9 @@ import sys
 import ctypes
 from ctypes import *
 from kivy.core.window import Window
+from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.label import MDLabel
+from kivymd.uix.selectioncontrol import MDSwitch
 
 Window.size = (470,700)
 
@@ -54,6 +57,8 @@ MDBoxLayout:
 
     MDTabs:
         id: tabs
+        on_tab_switch: app.on_tab_switch(*args)
+
         Tab:
             id: one
             title: 'Procesos'
@@ -68,18 +73,60 @@ MDBoxLayout:
                     overlay_color: app.overlay_color[:-1] + [.2]
                     icon_bg_color: app.overlay_color
                     on_selected: app.on_selected(*args)
-                    on_unselected: app.on_unselected(*args)
+                    on_unselected: app.on_unselected(*argstres)
                     on_selected_mode: app.set_selection_mode(*args)
         Tab:
             id: two
+            lock_swiping: True
             title: 'Meses'
+            
+            MDBoxLayout:
+                padding: 20, 20, 20, 20
+                margin: 20, 20
+                orientation: 'vertical'
+
+                MDLabel:
+                    id: meses
+                    text: "Seleccione los meses a descargar"
+                    halign: "left"
+                    font_size: 15
+
+                MDGridLayout:
+                    id: gridsw
+                    cols: 2
+                    row_force_default:True
+                    row_default_height:40
+       
+
+                    MDLabel:
+                        text: "Un solo mes"
+                        halign: "left"
+                        width:150
+                        size_hint_x:None
+                        font_size: 15
+                    
+                    MDSwitch:
+                        width: dp(64)
+                        active: True
+                        
+            
+                    
         Tab:
-            id: two
+            id: three
             title: 'Directorio'
 
 
-
-
+<switchVarios>
+    MDLabel:
+        text: "Mismo periodo para los procesos seleccionados"
+        halign: "left"
+        width:150
+        size_hint_x:None
+        font_size: 15
+    
+    MDSwitch:
+        width: dp(64)
+        active: True
    
 
 
@@ -88,6 +135,10 @@ MDBoxLayout:
 
     
 '''
+
+class switchVarios(MDLabel,MDSwitch):
+    '''Class implementing content for a switch.'''
+
 
 class Tab(MDFloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
@@ -120,6 +171,11 @@ class Example(MDApp):
         #self.root.ids.tabs.add_widget(Tab(title=f"Directorio"))
 
         icons = list(md_icons.keys())
+        #self.root.ids.tabs.add_widget(CalculaCompra(tab_label_text='Calculadora'))
+    
+        #self.iter_list_objects = iter(list(self.root.ids.tabs.get_tab_list()))
+        self.root.ids.tabs.children[0].disabled = True
+        
         self.root.ids.scroll.add_widget(TwoLineIconListItem(text=f"BADX", secondary_text=f"Balance de Energía en Distribución", icon=icons[1],on_release=self.seleccion_proceso))
         self.root.ids.scroll.add_widget(TwoLineIconListItem(text=f"BAEN", secondary_text=f"Balance de Energía en Transmisión", icon=icons[2],on_release=self.seleccion_proceso))
         self.root.ids.scroll.add_widget(TwoLineIconListItem(text=f"EFAC", secondary_text=f"Energias Facturadas", icon=icons[3],on_release=self.seleccion_proceso))
@@ -190,7 +246,11 @@ class Example(MDApp):
             
 
     def on_tab_switch(self, instance_tabs, instance_tab, instance_tab_label, tab_text):
-        instance_tab.ids.label.text = tab_text
+       #instance_tab.ids.label.text = tab_text
+       #print(tab_text)
+       if tab_text=='Procesos':
+        self.root.ids.tabs.children[0].disabled = True
+        self.root.ids.meses.text ="Seleccione los meses a descargar"
 
 
     def seleccion_proceso(self, TwoLineIconListItem):
@@ -224,26 +284,41 @@ class Example(MDApp):
         #    item=str(p)[i:f]
         #    #val_item=ctypes.cast(item, ctypes.py_object).value
         #    val_item=ctypes.cast(item, POINTER(kivymd.uix.selection.selection.SelectionItem)).text
-        siguiente = "Procesos seleccionados para continuar: "
+        siguientex = " ( "
+        i=0
         for pro_sgte in range(0,7):
             match pro_sgte:
                 case 0:
-                    if proceso_estado[pro_sgte]: siguiente = siguiente + " BADX"
+                    if proceso_estado[pro_sgte]: siguientex = siguientex + "  BADX  "
                 case 1:
-                    if proceso_estado[pro_sgte]: siguiente = siguiente + " BAEN"
+                    if proceso_estado[pro_sgte]: siguientex = siguientex + "  BAEN  "
                 case 2:
-                    if proceso_estado[pro_sgte]: siguiente = siguiente + " EFAC"
+                    if proceso_estado[pro_sgte]: siguientex = siguientex + "  EFAC  "
                 case 3:
-                    if proceso_estado[pro_sgte]: siguiente = siguiente + " FETR"
+                    if proceso_estado[pro_sgte]: siguientex = siguientex + "  FETR  "
                 case 4:
-                    if proceso_estado[pro_sgte]: siguiente = siguiente + " PJDX"
+                    if proceso_estado[pro_sgte]: siguientex = siguientex + "  PJDX  "
                 case 5:
-                    if proceso_estado[pro_sgte]: siguiente = siguiente + " PMGD"
+                    if proceso_estado[pro_sgte]: siguientex = siguientex + "  PMGD  "
                 case 6:
-                    if proceso_estado[pro_sgte]: siguiente = siguiente + " RCUT"
-        print(siguiente)    
-            
-            
+                    if proceso_estado[pro_sgte]: siguientex = siguientex + "  RCUT  "
+        
+        for pro_sgte in range(0,7):
+            if proceso_estado[pro_sgte]: i=i+1
+
+        print(siguientex+" "+str(i))
+
+        if i==1:
+            self.root.ids.meses.text = self.root.ids.meses.text+" del proceso seleccionado"+siguientex+" ) para continuar "
+        elif i>1:
+            self.root.ids.meses.text = self.root.ids.meses.text+" de los procesos seleccionados"+siguientex+" ) para continuar "
+            self.root.ids.gridsw.add_widget(switchVarios())
+
+        self.root.ids.tabs.children[0].disabled = False
+
+        self.root.ids.tabs.switch_tab('Meses')
+
+        #MDApp.get_running_app().root.ids.tabs.carousel.load_next('CalculaCompra')
             
         
         #print('testttt  ', self.root.ids.scroll.children)
@@ -262,5 +337,14 @@ class Example(MDApp):
             
         #for item in self.root.ids.scroll.children:
         #    if item.text == 'test':
+        
+        
+    
+
+#class CalculaCompra(MDFloatLayout, MDTabsBase):
+#    def __init__(self, **kwargs):
+#        super().__init__(**kwargs)
+
+
 
 Example().run()
