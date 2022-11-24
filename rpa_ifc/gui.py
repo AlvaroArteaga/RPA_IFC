@@ -26,8 +26,9 @@ from kivy.metrics import dp
 from kivymd.uix.list import OneLineIconListItem
 from kivymd.uix.menu import MDDropdownMenu
 import datetime
-
-
+from kivymd.uix.filemanager import MDFileManager
+import os
+from kivymd.toast import toast
 
 Window.size = (470,700)
 
@@ -184,7 +185,7 @@ MDBoxLayout:
                         id: drop_item_fn
                         pos_hint: {'center_x': .5, 'center_y': .5}
                         text: 'item 0'
-                        on_release: 
+                        on_release: app.menu_fn.open()
                         font_size: 13
 
                     MDLabel:
@@ -200,7 +201,7 @@ MDBoxLayout:
                         id: drop_item2_fn
                         pos_hint: {'center_x': .5, 'center_y': .5}
                         text: 'item 0'
-                        on_release: 
+                        on_release: app.menu2_fn.open()
                         font_size: 13
                         
             
@@ -208,6 +209,14 @@ MDBoxLayout:
         Tab:
             id: three
             title: 'Directorio'
+
+            MDFloatLayout:
+
+                MDRoundFlatIconButton:
+                    text: "Seleccione carpeta de destino"
+                    icon: "folder"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    on_release: app.file_manager_open()
 
    
 
@@ -244,7 +253,27 @@ class Example(MDApp):
     overlay_color = get_color_from_hex("#6042e4")
     
   
+    def file_manager_open(self):
+        #self.file_manager.show(os.path.expanduser("~"))  # output manager to the screen
+        self.file_manager.show(os.path.dirname(__file__)+'\..')
+        self.manager_open = True
 
+    def select_path(self, path: str):
+        '''
+        It will be called when you click on the file name
+        or the catalog selection button.
+
+        :param path: path to the selected directory or file;
+        '''
+
+        self.exit_manager()
+        toast(path)
+
+    def exit_manager(self, *args):
+        '''Called when the user reaches the root of the directory tree.'''
+
+        self.manager_open = False
+        self.file_manager.close()
 
 
     
@@ -254,7 +283,10 @@ class Example(MDApp):
         return Builder.load_string(KV)
 
     def set_item(self, text_item):
+        print('xxxxxxxxxxxx')
+        print(text_item)
         self.root.ids.drop_item.set_item(text_item)
+        print(self.root.ids.drop_item.text)
         currentDateTime = datetime.datetime.now()
         date = currentDateTime.date()
         year = int(date.strftime("%Y"))
@@ -313,6 +345,7 @@ class Example(MDApp):
                 } for i in range(mes_ini,mes_fin+1)
             ]
         self.menu2 = MDDropdownMenu(
+                background_color=self.theme_cls.primary_light,
                 caller= self.root.ids.drop_item2,
                 items=menu_items2,
                 position="center",
@@ -323,10 +356,95 @@ class Example(MDApp):
         #print("Se selecionó el MES "+str(mes))
         self.menu.dismiss()
 
+
+    def set_item_fn(self, text_item):
+        #print('xxxxxxxxxxxx')
+        #print(text_item)
+        self.root.ids.drop_item_fn.set_item(text_item)
+        #print(self.root.ids.drop_item.text)
+        currentDateTime = datetime.datetime.now()
+        date = currentDateTime.date()
+        year = int(date.strftime("%Y"))
+        mes = int(date.strftime("%m"))
+
+        
+        mes_inicial=13
+        mes_ini=13
+        for pro_sgte in range(0,7):
+            match pro_sgte:
+                case 0:
+                    if proceso_estado[pro_sgte]:
+                        if int(text_item) > 2020: mes_inicial=1
+                        elif int(text_item) == 2020: mes_inicial=3
+                        mes_ini=min(mes_ini,mes_inicial)
+                case 1:
+                    if proceso_estado[pro_sgte]:
+                        if int(text_item) == 2019: mes_inicial=5
+                        else: mes_inicial=1
+                        mes_ini=min(mes_ini,mes_inicial)
+                case 2:
+                    if proceso_estado[pro_sgte]:
+                        if int(text_item) == 2021: mes_inicial=4
+                        mes_ini=min(mes_ini,mes_inicial)
+                case 3:
+                    if proceso_estado[pro_sgte]:
+                        if int(text_item) >= 2021: mes_inicial=1
+                        mes_ini=min(mes_ini,mes_inicial)
+
+                case 4:
+                    if proceso_estado[pro_sgte]:
+                         if int(text_item) == 2022: mes_inicial=4
+                         mes_ini=min(mes_ini,mes_inicial)
+
+                case 5:
+                    if proceso_estado[pro_sgte]:
+                        if int(text_item) == 2019: mes_inicial=5
+                        else: mes_inicial=1
+                        mes_ini=min(mes_ini,mes_inicial)
+
+                case 6:
+                    if proceso_estado[pro_sgte]:
+                        if int(text_item) == 2019: mes_inicial=5
+                        else: mes_inicial=1
+                        mes_ini=min(mes_ini,mes_inicial)
+    
+        if int(text_item)<year: mes_fin=12
+        else: mes_fin= mes-1
+
+        menu_items2_fn = [
+                {
+                    "viewclass": "OneLineListItem",
+                    "text": f"{mes_sel[i-1]}",
+                    "height": dp(56),
+                    "on_release": lambda x=f"{mes_sel[i-1]}": self.set_item2_fn(x),
+                } for i in range(mes_ini,mes_fin+1)
+            ]
+        self.menu2_fn = MDDropdownMenu(
+                background_color=self.theme_cls.primary_light,
+                caller= self.root.ids.drop_item2_fn,
+                items=menu_items2_fn,
+                position="center",
+                width_mult=4,
+            )
+        self.menu2_fn.bind()
+
+        #print("Se selecionó el MES "+str(mes))
+        self.menu_fn.dismiss()
+
+
+
     def set_item2(self, text_item):
         self.root.ids.drop_item2.set_item(text_item)
+        print(text_item)
+        print("revisando: ",self.root.ids.drop_item2.current_item)
         self.menu2.dismiss()
 
+
+    def set_item2_fn(self, text_item):
+        self.root.ids.drop_item2_fn.set_item(text_item)
+        #print(text_item)
+        #print("revisando: ",self.root.ids.drop_item2.current_item)
+        self.menu2_fn.dismiss()
 
     def on_start(self):
 
@@ -457,6 +575,10 @@ class Example(MDApp):
         self.root.ids.scroll.unselected_all()
 
     def siguiente(self):
+        right_action_items = [["arrow-right", lambda x: self.siguiente2(),]]
+        self.root.ids.toolbar.right_action_items = right_action_items
+
+
         #print("siguiente")
         #print("tiene: ", len(self.root.ids.scroll.get_selected_list_items()), " procesos seleccionados")
         #for p in self.root.ids.scroll.get_selected_list_items() :
@@ -514,7 +636,8 @@ class Example(MDApp):
         
         #for pro_sgte in range(0,7):
         #    if proceso_estado[pro_sgte]: i=i+1
-        
+        print('11111111111111111')
+        print(self.root.ids.drop_item.text)
 
         print(siguientex+" "+str(i))
 
@@ -539,21 +662,21 @@ class Example(MDApp):
  
 
 
-        menu_items2 = [
-                {
-                    "viewclass": "OneLineListItem",
-                    "text": f"{mes_sel[i-1]}",
-                    "height": dp(56),
-                    "on_release": lambda x=f"{mes_sel[i-1]}": self.set_item2(x),
-                } for i in range(1,mes)
-            ]
-        self.menu2 = MDDropdownMenu(
-                caller= self.root.ids.drop_item2,
-                items=menu_items2,
-                position="center",
-                width_mult=4,
-            )
-        self.menu2.bind()
+        #menu_items2 = [
+        #        {
+        #            "viewclass": "OneLineListItem",
+        #            "text": f"{mes_sel[i-1]}",
+        #            "height": dp(56),
+        #            "on_release": lambda x=f"{mes_sel[i-1]}": self.set_item2(x),
+        #        } for i in range(1,mes)
+        #    ]
+        #self.menu2 = MDDropdownMenu(
+        #        caller= self.root.ids.drop_item2,
+        #        items=menu_items2,
+        #        position="center",
+        #        width_mult=4,
+        #    )
+        #self.menu2.bind()
 
 
 
@@ -568,6 +691,7 @@ class Example(MDApp):
                 } for i in range(j)
             ]
         self.menu = MDDropdownMenu(
+                background_color=self.theme_cls.primary_light,
                 caller= self.root.ids.drop_item,
                 items=menu_items,
                 position="center",
@@ -575,25 +699,47 @@ class Example(MDApp):
             )
         self.menu.bind()
 
+        menu_items_fn = [
+                {
+                    "viewclass": "OneLineListItem",
+                    "text": f"{year-i}",
+                    "height": dp(56),
+                    "on_release": lambda x=f"{year-i}": self.set_item_fn(x),
+                } for i in range(j)
+            ]
+        self.menu_fn = MDDropdownMenu(
+                background_color=self.theme_cls.primary_light,
+                caller= self.root.ids.drop_item_fn,
+                items=menu_items_fn,
+                position="center",
+                width_mult=4,
+            )
+        self.menu_fn.bind()
+      
+
         if mes>1:
 
-            self.root.ids.drop_item.text = str(year)
-            self.root.ids.drop_item2.text = mes_sel[mes-2]
+            #self.root.ids.drop_item.text = str(year)
+            #self.root.ids.drop_item2.text = mes_sel[mes-2]
             self.set_item(str(year))
             self.set_item2(mes_sel[mes-2])
+            self.set_item_fn(str(year))
+            self.set_item2_fn(mes_sel[mes-2])
         else:
-            self.root.ids.drop_item.text = str(year-1)
-            self.root.ids.drop_item2.text = mes_sel[11]
+            #self.root.ids.drop_item.text = str(year-1)
+            #self.root.ids.drop_item2.text = mes_sel[11]
             self.set_item(str(year-1))
             self.set_item2(mes_sel[11])
+            self.set_item_fn(str(year-1))
+            self.set_item2_fn(mes_sel[11])
     
 
+        print('2222222222222222222')
+        print(self.root.ids.drop_item.text)
 
 
 
-
-
-        self.root.ids.tabs.children[0].disabled = False
+        #####self.root.ids.tabs.children[0].disabled = False
 
         self.root.ids.tabs.switch_tab('Meses')
 
@@ -616,6 +762,15 @@ class Example(MDApp):
             
         #for item in self.root.ids.scroll.children:
         #    if item.text == 'test':
+
+    def siguiente2(self):
+        self.root.ids.tabs.switch_tab('Directorio')
+        self.manager_open = False
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager, select_path=self.select_path, search='dirs'
+        )
+    
+
     def test_state(self):
 
 
@@ -663,31 +818,37 @@ class Example(MDApp):
             date = currentDateTime.date()
             year = date.strftime("%Y")
             mes = int(date.strftime("%m"))
-
+            print("--------------")
             print(self.root.ids.drop_item2.text)
             print(mes_sel[mes-2])
             print(self.root.ids.drop_item.text)
             print(str(year))
 
-            if self.root.ids.drop_item2.text == mes_sel[mes-2] and self.root.ids.drop_item.text == str(year):
-                self.root.ids.drop_item2.text = mes_sel[mes-3]
-                self.root.ids.drop_item2_fn.text = mes_sel[mes-2]
-            elif mes_sel.index(self.root.ids.drop_item2.text)==11:
-                self.root.ids.drop_item2_fn.text=mes_sel[0]
+            if self.root.ids.drop_item2.current_item == mes_sel[mes-2] and self.root.ids.drop_item.current_item == str(year):
+                #self.root.ids.drop_item2.text = mes_sel[mes-3]
+                self.set_item2(mes_sel[mes-3])
+                #self.root.ids.drop_item2_fn.text = mes_sel[mes-2]
+                self.set_item2_fn(mes_sel[mes-2])
+            elif mes_sel.index(self.root.ids.drop_item2.current_item)==11:
+                #self.root.ids.drop_item2_fn.text=mes_sel[0]
+                self.set_item2_fn(mes_sel[0])
+
             else:
-                self.root.ids.drop_item2_fn.text=mes_sel[mes_sel.index(self.root.ids.drop_item2.text)+1]
+                #self.root.ids.drop_item2_fn.text=mes_sel[mes_sel.index(self.root.ids.drop_item2.text)+1]
+                self.set_item2_fn(mes_sel[mes_sel.index(self.root.ids.drop_item2.current_item)+1])
 
 
-            if mes_sel.index(self.root.ids.drop_item2.text)==11:
-                self.root.ids.drop_item_fn.text=str(int(self.root.ids.drop_item.text)+1)
+            if mes_sel.index(self.root.ids.drop_item2.current_item)==11:
+                #self.root.ids.drop_item_fn.text=str(int(self.root.ids.drop_item.text)+1)
+                self.set_item_fn(str(int(self.root.ids.drop_item.current_item)+1))
             else:
-                self.root.ids.drop_item_fn.text=self.root.ids.drop_item.text
+                #self.root.ids.drop_item_fn.text=self.root.ids.drop_item.text
+                self.set_item_fn(self.root.ids.drop_item.current_item)
 
-            print(mes_sel.index(self.root.ids.drop_item2.text))
-            print(self.root.ids.drop_item2.text)
-
-        
-
+            #print(mes_sel.index(self.root.ids.drop_item2.text))
+            #print(self.root.ids.drop_item2.text)
+        #   self.set_item(str(year-1))
+        #   self.set_item2(mes_sel[11])
 
   
             
