@@ -29,6 +29,8 @@ import datetime
 from kivymd.uix.filemanager import MDFileManager
 import os
 from kivymd.toast import toast
+#from kivymd.color_definitions import colors
+
 
 Window.size = (470,700)
 
@@ -255,7 +257,8 @@ class Example(MDApp):
   
     def file_manager_open(self):
         #self.file_manager.show(os.path.expanduser("~"))  # output manager to the screen
-        self.file_manager.show(os.path.dirname(__file__)+'\..')
+        print(__file__)
+        self.file_manager.show(os.path.dirname(os.path.dirname(__file__)))
         self.manager_open = True
 
     def select_path(self, path: str):
@@ -265,9 +268,10 @@ class Example(MDApp):
 
         :param path: path to the selected directory or file;
         '''
-
+        print("Carpeta de Destino: "+path)
         self.exit_manager()
         toast(path)
+        self.theme_cls.primary_palette = "Red"
 
     def exit_manager(self, *args):
         '''Called when the user reaches the root of the directory tree.'''
@@ -765,6 +769,11 @@ class Example(MDApp):
 
     def siguiente2(self):
         self.root.ids.tabs.switch_tab('Directorio')
+
+        right_action_items = [["cloud-download-outline", lambda x: self.siguiente2(),]]
+        #self.root.ids.toolbar.icon_color=colors["Red"]["900"]
+        self.root.ids.toolbar.right_action_items = right_action_items
+        
         self.manager_open = False
         self.file_manager = MDFileManager(
             exit_manager=self.exit_manager, select_path=self.select_path, search='dirs'
