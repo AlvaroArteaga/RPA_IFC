@@ -770,7 +770,7 @@ class Example(MDApp):
     def siguiente2(self):
         self.root.ids.tabs.switch_tab('Directorio')
 
-        right_action_items = [["cloud-download-outline", lambda x: self.siguiente2(),]]
+        right_action_items = [["cloud-download-outline", lambda x: self.descargar(),]]
         #self.root.ids.toolbar.icon_color=colors["Red"]["900"]
         self.root.ids.toolbar.right_action_items = right_action_items
         
@@ -779,6 +779,8 @@ class Example(MDApp):
             exit_manager=self.exit_manager, select_path=self.select_path, search='dirs'
         )
     
+    def descargar(self):
+        pass
 
     def test_state(self):
 
